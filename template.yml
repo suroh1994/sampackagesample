@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A presentation of the sam package issue
+
+Resources:
+  MyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./code
+      Description: A simple hello world function
+      FunctionName: !Sub ${AWS::StackName}_MyFunction
+      Handler: main
+      MemorySize: 128
+      Runtime: go1.x
+      Timeout: 5
