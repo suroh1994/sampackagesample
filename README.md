@@ -1,18 +1,9 @@
-# How to reproduce
-1. Clone this repository into a directory on your local Windows machine.
-1. ```cd``` into the directory.
-1. Run ```sam build```.
-1. Run ```sam package --s3-bucket YOUR_BUCKETNAME```
-1. Clone this repository into a second directory on your local windows machine.
-1. Copy the second directory into a third directory using ```xcopy seconddirectory thirddirectory /s /e```.
-1. ```cd``` into the second directory.
-1. Run ```sam build```.
-1. Run ```sam package --s3-bucket YOUR_BUCKETNAME```
-1. ```cd``` into the third directory.
-1. Run ```sam build```.
-1. Run ```sam package --s3-bucket YOUR_BUCKETNAME```
+# What was the problem?
 
-**Expected result:** The binaries are only uploaded once in step 4.  
-**Observed result:** The binaries are being uploaded three times in step 4, step 9 and step 12.
+The binaries built by ```sam build``` used the default settings for ```go build```, which results in the binaries including absolute paths in them. Therefore binaries built from different directories are not identical, even though the source code is.
 
-This was tested with the AWS SAM CLI version 1.31.0 on Windows 10 Pro Version 20H2 (Build 19042.1165)
+# How was it resolved?
+
+Passing ```-trimpath``` to ```go build``` removes these absolute path references from the generated binaries. This way all binaries have the same hash values and ```sam package``` no longer uploads the binary more than once.
+
+To implement this, the template file has been adjusted and now uses ```Makefile``` to build the binaries. See the [documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html) for more information on how to do this and what else might be possible.
