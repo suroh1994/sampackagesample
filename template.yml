@@ -13,3 +13,5 @@ Resources:
       MemorySize: 128
       Runtime: go1.x
       Timeout: 5
+    Metadata:
+      BuildMethod: makefile
